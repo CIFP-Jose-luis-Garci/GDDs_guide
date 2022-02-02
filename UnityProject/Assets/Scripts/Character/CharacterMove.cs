@@ -19,6 +19,13 @@ public class CharacterMove : MonoBehaviour
     //Componente Character Controller
     CharacterController cc;
 
+    //ROTACIÓN CON CINEMACHINE
+    //Cámara que nos permitirá girar al personaje
+    [SerializeField] Camera freeCamera;
+    //Valores para la rotación (suavizado y velocidad)
+    float turnSmoothTime = 0.2f;
+    float turnSmoothVelocity = 30f;
+
     void Start()
     {
         cc = GetComponent<CharacterController>();
@@ -31,6 +38,8 @@ public class CharacterMove : MonoBehaviour
         Mover();
 
         Saltar();
+
+        Rotar();
     }
 
     void Saltar()
@@ -70,7 +79,18 @@ public class CharacterMove : MonoBehaviour
 
 
         //Giro
-        Vector3 turn = new Vector3(0f, 1f, 0f);
-        transform.Rotate(turn * desplX);
+        //Vector3 turn = new Vector3(0f, 1f, 0f);
+        //transform.Rotate(turn * desplX);
+    }
+
+    void Rotar()
+    {
+        //Obtenemos el ángulo de la cámara
+        float targetAngle = Mathf.Atan2(despl.x, despl.z) * Mathf.Rad2Deg + freeCamera.transform.eulerAngles.y;
+        //Obtenemos el ángulo al que tendríamos que mirar nosotros
+        float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
+        //Giramos al personaje
+        transform.rotation = Quaternion.Euler(0f, angle, 0f);
+
     }
 }
