@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Pause_Exit : MonoBehaviour
 {
@@ -91,6 +92,7 @@ public class Pause_Exit : MonoBehaviour
     {
         //Esta línea de código hace que se salga del juego
         //ES MUY IMPORTANTE DAR A LOS JUGADORES LA OPCiÓN DE SALIR
-        Application.Quit();
+        //En lugar de apagar el programa, cargo la escena de créditos
+        SceneManager.LoadScene(2);
     }
 }
