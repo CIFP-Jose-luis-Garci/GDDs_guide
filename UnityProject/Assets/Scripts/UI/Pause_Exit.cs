@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;// Required when using Event data.
 
 public class Pause_Exit : MonoBehaviour
 {
+
+    //Instancia del Input System
+    InputController inputController;
+
     //Obtenemos el menu que queremos desactivar/activar
     //Es un Empty Object que actua como padre de los elementos
     [SerializeField] GameObject resumeMenu;
@@ -16,6 +21,18 @@ public class Pause_Exit : MonoBehaviour
 
     //Booleana que nos dice si el juego está pausado o no
     bool gamePaused = false;
+
+    //Botones del menú
+    [SerializeField] Button btnResume, btnQuit;
+
+    private void Awake()
+    {
+        inputController = new InputController();
+
+        //Botón de pausa
+        inputController.Control.Pause.performed += _ => ActivarMenu();
+
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -35,11 +52,6 @@ public class Pause_Exit : MonoBehaviour
         // Podemos cambiarlo por ejemplo por el movimiento de nuestro personaje
         Contador();
 
-        //Si pulsamos la tecla "Esc" o la que sea, se activa el menú
-        if(Input.GetKeyDown(KeyCode.Escape))
-        {
-            ActivarMenu();
-        }
 
     }
 
@@ -51,6 +63,7 @@ public class Pause_Exit : MonoBehaviour
         if(!gamePaused)
         {
             gamePaused = true;
+            
             //Detenemos el tiempo del juego
             Time.timeScale = 0f;
         }
@@ -62,6 +75,7 @@ public class Pause_Exit : MonoBehaviour
         }
         //Lo que haya salido de este interruptor, lo pasamos al menú para que se active o no
         resumeMenu.SetActive(gamePaused);
+        btnResume.Select();
     }
 
     void Contador()
@@ -94,5 +108,21 @@ public class Pause_Exit : MonoBehaviour
         //ES MUY IMPORTANTE DAR A LOS JUGADORES LA OPCiÓN DE SALIR
         //En lugar de apagar el programa, cargo la escena de créditos
         SceneManager.LoadScene(2);
+    }
+
+    //Listeners
+    public void OnSelect(BaseEventData eventData)
+    {
+        Debug.Log(this.gameObject.name + " was selected");
+    }
+
+    private void OnEnable()
+    {
+        inputController.Enable();
+    }
+
+    private void OnDisable()
+    {
+        inputController.Disable();
     }
 }

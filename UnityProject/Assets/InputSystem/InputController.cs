@@ -220,6 +220,44 @@ public class @InputController : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Control"",
+            ""id"": ""be454b9e-3c92-48fa-820b-ac2ef8e3715f"",
+            ""actions"": [
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""e3a2137a-b883-425b-a804-a0c405051a36"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""824aa4e1-401a-4930-8b52-ba5ac8712fb1"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c2c4eefb-aad8-464d-a585-63b78f2190b9"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -234,6 +272,9 @@ public class @InputController : IInputActionCollection, IDisposable
         // Camera
         m_Camera = asset.FindActionMap("Camera", throwIfNotFound: true);
         m_Camera_Pivot = m_Camera.FindAction("Pivot", throwIfNotFound: true);
+        // Control
+        m_Control = asset.FindActionMap("Control", throwIfNotFound: true);
+        m_Control_Pause = m_Control.FindAction("Pause", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -377,6 +418,39 @@ public class @InputController : IInputActionCollection, IDisposable
         }
     }
     public CameraActions @Camera => new CameraActions(this);
+
+    // Control
+    private readonly InputActionMap m_Control;
+    private IControlActions m_ControlActionsCallbackInterface;
+    private readonly InputAction m_Control_Pause;
+    public struct ControlActions
+    {
+        private @InputController m_Wrapper;
+        public ControlActions(@InputController wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Pause => m_Wrapper.m_Control_Pause;
+        public InputActionMap Get() { return m_Wrapper.m_Control; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(ControlActions set) { return set.Get(); }
+        public void SetCallbacks(IControlActions instance)
+        {
+            if (m_Wrapper.m_ControlActionsCallbackInterface != null)
+            {
+                @Pause.started -= m_Wrapper.m_ControlActionsCallbackInterface.OnPause;
+                @Pause.performed -= m_Wrapper.m_ControlActionsCallbackInterface.OnPause;
+                @Pause.canceled -= m_Wrapper.m_ControlActionsCallbackInterface.OnPause;
+            }
+            m_Wrapper.m_ControlActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Pause.started += instance.OnPause;
+                @Pause.performed += instance.OnPause;
+                @Pause.canceled += instance.OnPause;
+            }
+        }
+    }
+    public ControlActions @Control => new ControlActions(this);
     public interface IPlayerActions
     {
         void OnMove(InputAction.CallbackContext context);
@@ -388,5 +462,9 @@ public class @InputController : IInputActionCollection, IDisposable
     public interface ICameraActions
     {
         void OnPivot(InputAction.CallbackContext context);
+    }
+    public interface IControlActions
+    {
+        void OnPause(InputAction.CallbackContext context);
     }
 }
