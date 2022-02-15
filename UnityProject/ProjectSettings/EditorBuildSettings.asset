@@ -6,12 +6,13 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Pruebas_Character.unity
-    guid: 887d53d718d764f19bf847dd93223949
-  - enabled: 1
     path: Assets/Scenes/Pruebas_UI.unity
     guid: d377060d9742b42e6902f511249784ee
   - enabled: 1
+    path: Assets/Scenes/Pruebas_Character.unity
+    guid: 887d53d718d764f19bf847dd93223949
+  - enabled: 1
     path: Assets/Scenes/Creditos.unity
     guid: 3ec503059b4b74fca96c63694a2d7b24
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: f867496f8b288be4e9ec2a7da0700016, type: 2}
