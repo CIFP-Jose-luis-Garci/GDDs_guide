@@ -125,4 +125,9 @@ public class Pause_Exit : MonoBehaviour
     {
         inputController.Disable();
     }
+
+    public void LoadScene(int escena)
+    {
+
+    }
 }
