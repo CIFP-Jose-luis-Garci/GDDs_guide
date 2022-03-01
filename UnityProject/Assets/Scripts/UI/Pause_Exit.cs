@@ -75,7 +75,8 @@ public class Pause_Exit : MonoBehaviour
         }
         //Lo que haya salido de este interruptor, lo pasamos al menú para que se active o no
         resumeMenu.SetActive(gamePaused);
-        btnResume.Select();
+        if(gamePaused)
+            btnResume.Select();
     }
 
     void Contador()
@@ -110,11 +111,6 @@ public class Pause_Exit : MonoBehaviour
         SceneManager.LoadScene(2);
     }
 
-    //Listeners
-    public void OnSelect(BaseEventData eventData)
-    {
-        Debug.Log(this.gameObject.name + " was selected");
-    }
 
     private void OnEnable()
     {
